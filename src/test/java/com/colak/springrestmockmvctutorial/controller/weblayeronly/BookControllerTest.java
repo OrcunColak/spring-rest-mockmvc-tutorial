@@ -73,4 +73,22 @@ class BookControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
+
+    @Test
+    void updateBook() throws Exception {
+        // Mocking the service's behavior
+        Mockito.when(bookService.update(Mockito.any(Book.class))).thenReturn(true);
+
+        // Creating a sample Book object to send in the request body
+        var updatedBook = new Book(1L, "John Doe", "123", LocalDate.now());
+
+        // Performing the PUT request with the updated book in the request body
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/book")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatedBook));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value(true)); // Verify the response body is true
+    }
 }
